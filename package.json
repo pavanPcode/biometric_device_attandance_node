@@ -2,9 +2,9 @@
   "name": "biometric_device_attandance_node",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "index.js"
+    "start": "server.js"
 },
   "keywords": [],
   "author": "",
