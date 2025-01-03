@@ -21,50 +21,35 @@ const insertData = (data) => {
                 return;
             }
 
-            // Loop through each cardid and insert them one by one
-            const cardidArray = data.cardid; // Extract cardid array from the input data
-            const insertPromises = [];
+            const query = `INSERT INTO RollcallSwipeAttendance (superid, machineid, cardid, dateoftransaction, createdby, updatedby, Username)
+                           VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
-            cardidArray.forEach(cardid => {
-                const query = `INSERT INTO RollcallSwipeAttendance (superid, machineid, cardid, dateoftransaction, createdby, updatedby)
-                               VALUES (?, ?, ?, ?, ?, ?)`;
+            const values = [
+                data.superid,
+                data.machineid,
+                data.eId, // Using the single cardid (eId in this case)
+                data.dateoftransaction,
+                data.createdby || 'admin', // Default to 'admin' if not provided
+                data.updatedby || 'admin',  // Default to 'admin' if not provided
+                data.N // Username field
+            ];
 
-                const values = [
-                    data.superid,
-                    data.machineid,
-                    cardid, // Inserting one cardid at a time
-                    data.dateoftransaction,
-                    data.createdby || 'admin', // Default to 'admin' if not provided
-                    data.updatedby || 'admin'  // Default to 'admin' if not provided
-                ];
-
-                // Push each insert operation as a Promise into the array
-                insertPromises.push(new Promise((resolve, reject) => {
-                    db.query(query, values, (err, results) => {
-                        if (err) {
-                            // Enhanced error logging
-                            console.error(`Insert failed for cardid ${cardid}:`, err.message);
-                            reject({ success: false, message: `Failed to insert data for cardid ${cardid}`, error: err.message });
-                        } else {
-                            resolve({ success: true, message: `Data inserted successfully for cardid ${cardid}`, id: results.insertId });
-                        }
-                    });
-                }));
+            // Perform the insert operation
+            db.query(query, values, (err, results) => {
+                if (err) {
+                    // Enhanced error logging
+                    console.error('Insert failed:', err.message);
+                    reject({ success: false, message: 'Failed to insert data', error: err.message });
+                } else {
+                    resolve({ success: true, message: 'Data inserted successfully', id: results.insertId });
+                }
             });
 
-            // Wait for all insert promises to complete
-            Promise.all(insertPromises)
-                .then(results => {
-                    db.end(); // Close the connection after all inserts
-                    resolve({ success: true, message: 'All data inserted successfully.', results });
-                })
-                .catch(error => {
-                    db.end(); // Close the connection if there's any error
-                    reject(error);
-                });
+            db.end(); // Close the connection after insert operation
         });
     });
 };
+
 
 
 // Function to retrieve data from the database
@@ -78,7 +63,7 @@ const getData = (date,superid,conditions = {}) => {
                 return;
             }
 
-            let query = `SELECT id,superid, machineid, cardid, dateoftransaction FROM  RollcallSwipeAttendance  where dateoftransaction 
+            let query = `SELECT id,superid, machineid, cardid as eId,Username AS N, dateoftransaction FROM  RollcallSwipeAttendance  where dateoftransaction 
                             between '${date} 00:00:00' and '${date} 23:59:59' and superid = ${superid}`;
             console.log(query)
             const conditionKeys = Object.keys(conditions);
