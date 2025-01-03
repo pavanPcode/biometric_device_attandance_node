@@ -1,13 +1,13 @@
-require('dotenv').config(); // Load environment variables from .env
+// require('dotenv').config(); // Load environment variables from .env
 const mysql = require('mysql2');
 
 // Function to create a new MySQL connection
 const createConnection = () => {
     return mysql.createConnection({
-        host: process.env.DB_HOST,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME,
+        host: 'MYSQL5048.site4now.net',
+        user: 'a50d85_payroll',
+        password: 'p3r3nnial',
+        database: 'db_a50d85_payroll',
     });
 };
 
