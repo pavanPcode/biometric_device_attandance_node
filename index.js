@@ -23,7 +23,6 @@ app.post('/writeattendance', (req, res) => {
 });
 
 
-
 // POST API to insert data
 app.get('/getattendance', (req, res) => {
     const date = req.query.date; // Read the JSON data from the request body
