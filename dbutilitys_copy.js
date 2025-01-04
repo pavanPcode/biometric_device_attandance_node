@@ -21,17 +21,17 @@ const insertData = (data) => {
                 return;
             }
 
-            const query = `INSERT INTO RollcallSwipeAttendance (superid, machineid, cardid, dateoftransaction)
-                           VALUES (?, ?, ?, ?)`;
+            const query = `INSERT INTO RollcallSwipeAttendance (superid, machineid, cardid, dateoftransaction, createdby, updatedby, Username)
+                           VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
             const values = [
                 data.superid,
                 data.machineid,
-                data.cardid, // Using the single cardid (eId in this case)
+                data.eId, // Using the single cardid (eId in this case)
                 data.dateoftransaction,
-                // data.createdby || 'admin', // Default to 'admin' if not provided
-                // data.updatedby || 'admin',  // Default to 'admin' if not provided
-                // data.N // Username field
+                data.createdby || 'admin', // Default to 'admin' if not provided
+                data.updatedby || 'admin',  // Default to 'admin' if not provided
+                data.N // Username field
             ];
 
             // Perform the insert operation
@@ -63,7 +63,7 @@ const getData = (date,superid,conditions = {}) => {
                 return;
             }
 
-            let query = `SELECT id,superid, machineid, cardid, dateoftransaction FROM  RollcallSwipeAttendance  where dateoftransaction 
+            let query = `SELECT id,superid, machineid, cardid as eId,Username AS N, dateoftransaction FROM  RollcallSwipeAttendance  where dateoftransaction 
                             between '${date} 00:00:00' and '${date} 23:59:59' and superid = ${superid}`;
             console.log(query)
             const conditionKeys = Object.keys(conditions);
